@@ -151,9 +151,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a6e857e5d63454d9f2a83ab363139f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fieltTypes:
-  - {fileID: 4340020419686628069, guid: 5f69164498fac6a44b66a3e5e367fb8c, type: 3}
-  - {fileID: 4688170263441797843, guid: 81deebc5db02d9442952f9fc8168e2ed, type: 3}
+  whiteCell: {fileID: 4340020419686628069, guid: 5f69164498fac6a44b66a3e5e367fb8c, type: 3}
+  blackCell: {fileID: 4688170263441797843, guid: 81deebc5db02d9442952f9fc8168e2ed, type: 3}
+  pawnPiece: {fileID: 8103962932472068665, guid: 8080f3a90b90817409245f17fbc736c9, type: 3}
+  rookPiece: {fileID: 932639430556427338, guid: 22295763ebc0edf41b759a37bc87dd27, type: 3}
+  knightPiece: {fileID: 6346173949021505623, guid: 9b405cddf99f46c41bdc403cebc2430f, type: 3}
+  bishopPiece: {fileID: 8316713524277398686, guid: 38e4f842d5358b64e91d4223a483d39f, type: 3}
+  queenPiece: {fileID: 5673940307773288056, guid: f156e6f793904254687bd303282c5a0e, type: 3}
+  kingPiece: {fileID: 1863791245129898363, guid: 936e39969c41bc549b1020ed5fe23be2, type: 3}
 --- !u!4 &275185458
 Transform:
   m_ObjectHideFlags: 0
