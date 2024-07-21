@@ -1,9 +1,12 @@
+using Assets.Scripts.Controllers;
+using Assets.Scripts.Managers;
+using Assets.Scripts.Models;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ChessFieldManager : GameManager
+public class ChessFieldManager : FieldManager
 {
     // Field
     [Header("Feild")]
@@ -18,98 +21,41 @@ public class ChessFieldManager : GameManager
     [SerializeField] GameObject queenPiece;
     [SerializeField] GameObject kingPiece;
 
-
-    private enum Pieces : int
+    private readonly int _width = 8;
+    private readonly int _height = 8;
+    private Field _field;
+    private readonly int[,] _cellMap = new int[,] // 0 = white, 1 = black
     {
-        None = 0,
-        Pawn = 1,
-        Rook = 2,
-        Knight = 3,
-        Bishop = 4,
-        Queen = 5,
-        King = 6
-    }
-    private Pieces[,] piecesPositions = new Pieces[,]
-    {
-        { Pieces.Rook, Pieces.Knight, Pieces.Bishop, Pieces.Queen, Pieces.King, Pieces.Bishop, Pieces.Knight, Pieces.Rook },
-        { Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn },
-        { Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None },
-        { Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None },
-        { Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None },
-        { Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None, Pieces.None },
-        { Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn, Pieces.Pawn },
-        { Pieces.Rook, Pieces.Knight, Pieces.Bishop, Pieces.Queen, Pieces.King, Pieces.Bishop, Pieces.Knight, Pieces.Rook },
+        { 0, 1, 0, 1, 0, 1, 0, 1 },
+        { 1, 0, 1, 0, 1, 0, 1, 0 },
+        { 0, 1, 0, 1, 0, 1, 0, 1 },
+        { 1, 0, 1, 0, 1, 0, 1, 0 },
+        { 0, 1, 0, 1, 0, 1, 0, 1 },
+        { 1, 0, 1, 0, 1, 0, 1, 0 },
+        { 0, 1, 0, 1, 0, 1, 0, 1 },
+        { 1, 0, 1, 0, 1, 0, 1, 0 },
     };
-    
 
+    private Vector2 GetVisualCoordinates(int x, int y)
+    {
+        return new Vector2(x - 3.5f, y - 3.5f);
+    }
 
     #region Default
     protected override void Awake()
     {
-        InitChessField();
-        InitChessPieces();
-    }
-    #endregion
+        _field = new Field(_width, _height);
 
-
-    #region Private
-    private void InitChessField()
-    {
-        for (int i = 0; i < 8; i++)
+        for (int x = 0; x < _width; x++)
         {
-            for(int j = 0; j < 8; j++)
+            for (int y = 0; y < _height; y++)
             {
-                var cellPrefab = (i + j) % 2 == 0 ? whiteCell : blackCell;
-                float xPos = -3.5f + i;
-                float yPos = -3.5f + j;
-                var newCell = Instantiate(cellPrefab);
-                newCell.transform.position = new Vector3(xPos, yPos, 0.0f);
-
-                if (newCell.TryGetComponent<Cell>(out var cellObject))
+                int cellType = _cellMap[x, y];
+                GameObject cellObject = Instantiate(cellType == 0 ? whiteCell : blackCell);
+                cellObject.transform.position = GetVisualCoordinates(x, y);
+                if (cellObject.TryGetComponent<CellController>(out var cellController))
                 {
-                    cellObject.X = i;
-                    cellObject.Y = j;
-                }
-            }
-        }
-    }
-    private void InitChessPieces()
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                Pieces pieceId = piecesPositions[i, j];
-                GameObject newCell = null;
-                switch (pieceId)
-                {
-                    case Pieces.Pawn:
-                        newCell = Instantiate(pawnPiece);
-                        break;
-                    case Pieces.Rook:
-                        newCell = Instantiate(rookPiece);
-                        break;
-                    case Pieces.Knight:
-                        newCell = Instantiate(knightPiece);
-                        break;
-                    case Pieces.Bishop:
-                        newCell = Instantiate(bishopPiece);
-                        break;
-                    case Pieces.Queen:
-                        newCell = Instantiate(queenPiece);
-                        break;
-                    case Pieces.King:
-                        newCell = Instantiate(kingPiece);
-                        break;
-                    default:
-                        break;
-                }
-
-                if (newCell != null)
-                {
-                    float xPos = -3.5f + j;
-                    float yPos = -3.5f + i;
-                    newCell.transform.position = new Vector3(xPos, yPos, 0.0f);
+                    cellController.Cell = _field.GetCell(x, y);
                 }
             }
         }

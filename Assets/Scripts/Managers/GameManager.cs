@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Protected functions for derivers
-    protected virtual void Awake()
+    protected void Awake()
     {
         
     }
